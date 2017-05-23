@@ -8,6 +8,7 @@ import { Hero } from './hero';
 @Injectable()
 export class HeroService {
 
+    private headers = new Headers({ 'Content-Type': 'application/json' });
     private heroesUrl = 'api/heroes';
 
     constructor(private http: Http) { }
@@ -15,7 +16,7 @@ export class HeroService {
     getHeroes(): Promise<Hero[]> {
         return this.http.get(this.heroesUrl)
             .toPromise()
-            .then(response => response.json().datat as Hero[])
+            .then(response => response.json().data as Hero[])
             .catch(this.handleError);
     }
 
@@ -41,4 +42,15 @@ export class HeroService {
             .catch(this.handleError);
     }
 
+    update(hero: Hero): Promise<Hero> {
+
+        const url = `${this.heroesUrl}/${hero.id}`;
+
+        return this.http
+            .put(url, JSON.stringify(hero), { headers: this.headers })
+            .toPromise()
+            .then(() => hero)
+            .catch(this.handleError);
+
+    }
 }
